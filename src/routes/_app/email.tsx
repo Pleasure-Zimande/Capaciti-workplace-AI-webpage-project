@@ -2,7 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
-import { Mail, Sparkles } from "lucide-react";
+import { Mail, Sparkles, Copy, Check } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 import { generateEmail } from "@/lib/ai.functions";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,7 +14,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Shimmer } from "@/components/ai-elements/shimmer";
 import { AiDisclaimer } from "@/components/ai-disclaimer";
 import { ToolPageHeader } from "@/components/tool-page-header";
-import { AIResultCard } from "@/components/ai-result-card";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_app/email")({
@@ -40,6 +40,7 @@ function EmailPage() {
     if (typeof window === "undefined") return "";
     return localStorage.getItem(STORAGE_KEY) ?? "";
   });
+  const [copied, setCopied] = useState(false);
 
   const m = useMutation({
     mutationFn: () => generate({ data: { topic, audience, tone, length } }),
@@ -50,7 +51,11 @@ function EmailPage() {
     onError: (e: Error) => toast.error(e.message || "Generation failed"),
   });
 
-  const canGenerate = topic.trim().length >= 3 && audience.trim().length >= 2;
+  const copy = async () => {
+    await navigator.clipboard.writeText(output);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
 
   return (
     <div className="mx-auto w-full max-w-6xl space-y-6">
@@ -114,7 +119,7 @@ function EmailPage() {
             </div>
             <Button
               onClick={() => m.mutate()}
-              disabled={m.isPending || !canGenerate}
+              disabled={m.isPending || topic.trim().length < 3 || audience.trim().length < 2}
               className="w-full bg-gradient-primary text-primary-foreground hover:opacity-95"
             >
               {m.isPending ? (
@@ -130,20 +135,38 @@ function EmailPage() {
           </CardContent>
         </Card>
 
-        <AIResultCard
-          title="Result"
-          description="Edit, regenerate, or copy."
-          value={output}
-          onChange={(v) => {
-            setOutput(v);
-            localStorage.setItem(STORAGE_KEY, v);
-          }}
-          isLoading={m.isPending}
-          onRegenerate={() => m.mutateAsync()}
-          canRegenerate={canGenerate}
-          emptyText="Your generated email will appear here."
-          monospace
-        />
+        <Card className="shadow-soft">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="text-base">Result</CardTitle>
+              <CardDescription>Review and copy.</CardDescription>
+            </div>
+            {output && (
+              <Button size="sm" variant="outline" onClick={copy}>
+                {copied ? <Check className="mr-1 h-4 w-4" /> : <Copy className="mr-1 h-4 w-4" />}
+                {copied ? "Copied" : "Copy"}
+              </Button>
+            )}
+          </CardHeader>
+          <CardContent>
+            {m.isPending ? (
+              <div className="space-y-3">
+                <div className="h-4 w-1/2 animate-pulse rounded bg-muted" />
+                <div className="h-4 w-full animate-pulse rounded bg-muted" />
+                <div className="h-4 w-11/12 animate-pulse rounded bg-muted" />
+                <div className="h-4 w-3/4 animate-pulse rounded bg-muted" />
+              </div>
+            ) : output ? (
+              <article className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap font-mono text-[13px] leading-relaxed">
+                {output}
+              </article>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                Your generated email will appear here.
+              </p>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
