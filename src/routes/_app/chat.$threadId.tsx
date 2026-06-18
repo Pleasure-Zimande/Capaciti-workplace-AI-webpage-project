@@ -207,9 +207,8 @@ function ChatWindow({
     inputRef.current?.focus();
   }, [threadId, status]);
 
-  const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const text = input.trim();
+  const onSubmit = async (msg: { text?: string }) => {
+    const text = (msg.text ?? input).trim();
     if (!text || isBusy) return;
     setInput("");
     const isFirst = !threadHasMessages && messages.length === 0;
