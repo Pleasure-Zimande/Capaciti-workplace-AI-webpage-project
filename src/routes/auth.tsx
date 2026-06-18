@@ -4,7 +4,6 @@ import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -136,30 +135,36 @@ function AuthPage() {
                 <span className="bg-card px-2 text-muted-foreground">or with email</span>
               </div>
             </div>
-            <Tabs defaultValue="signin" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="signin">Sign in</TabsTrigger>
-                <TabsTrigger value="signup">Sign up</TabsTrigger>
-              </TabsList>
-              <TabsContent value="signin">
-                <form className="space-y-3" onSubmit={onSignIn}>
-                  <Field label="Email" type="email" value={email} onChange={setEmail} autoComplete="email" />
-                  <Field label="Password" type="password" value={password} onChange={setPassword} autoComplete="current-password" />
-                  <Button type="submit" className="w-full bg-gradient-primary" disabled={busy}>
-                    {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : "Sign in"}
-                  </Button>
-                </form>
-              </TabsContent>
-              <TabsContent value="signup">
-                <form className="space-y-3" onSubmit={onSignUp}>
-                  <Field label="Email" type="email" value={email} onChange={setEmail} autoComplete="email" />
-                  <Field label="Password" type="password" value={password} onChange={setPassword} autoComplete="new-password" placeholder="At least 8 characters" />
-                  <Button type="submit" className="w-full bg-gradient-primary" disabled={busy}>
-                    {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : "Create account"}
-                  </Button>
-                </form>
-              </TabsContent>
-            </Tabs>
+            <div className="grid grid-cols-2 gap-1 rounded-md bg-muted p-1">
+              <button
+                type="button"
+                onClick={() => setMode("signin")}
+                className={`rounded px-3 py-1.5 text-sm font-medium transition-colors ${mode === "signin" ? "bg-background shadow-soft" : "text-muted-foreground hover:text-foreground"}`}
+              >
+                Sign in
+              </button>
+              <button
+                type="button"
+                onClick={() => setMode("signup")}
+                className={`rounded px-3 py-1.5 text-sm font-medium transition-colors ${mode === "signup" ? "bg-background shadow-soft" : "text-muted-foreground hover:text-foreground"}`}
+              >
+                Sign up
+              </button>
+            </div>
+            <form className="mt-4 space-y-3" onSubmit={mode === "signin" ? onSignIn : onSignUp}>
+              <Field label="Email" type="email" value={email} onChange={setEmail} autoComplete="email" />
+              <Field
+                label="Password"
+                type="password"
+                value={password}
+                onChange={setPassword}
+                autoComplete={mode === "signin" ? "current-password" : "new-password"}
+                placeholder={mode === "signup" ? "At least 8 characters" : undefined}
+              />
+              <Button type="submit" className="w-full bg-gradient-primary" disabled={busy}>
+                {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : mode === "signin" ? "Sign in" : "Create account"}
+              </Button>
+            </form>
             <p className="mt-4 text-center text-[11px] text-muted-foreground">
               By continuing, you agree to our terms. <Link to="/" className="underline">Back home</Link>
             </p>
