@@ -1,0 +1,11 @@
+# Workplace AI Productivity Assistant
+
+> AI-powered workspace for professionals: email drafting, meeting notes summarization, task planning, research briefs, and an AI chat assistant.
+
+## Pages
+- [Home / Dashboard](/): Overview of all AI productivity tools.
+- [Smart Email Generator](/email): Generate professional emails by tone and audience.
+- [Meeting Notes Summarizer](/notes): Convert notes into key points, decisions, and actions.
+- [AI Task Planner](/planner): Prioritize and schedule tasks.
+- [AI Research Assistant](/research): Structured research briefs on any topic.
+- [AI Chat](/chat): Conversational assistant.
