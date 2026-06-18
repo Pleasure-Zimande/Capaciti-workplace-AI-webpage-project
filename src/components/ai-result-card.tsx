@@ -14,7 +14,7 @@ type Props = {
   value: string;
   onChange: (next: string) => void;
   isLoading?: boolean;
-  onRegenerate?: () => void | Promise<void>;
+  onRegenerate?: () => void | Promise<unknown>;
   canRegenerate?: boolean;
   emptyText?: string;
   renderMarkdown?: boolean;
