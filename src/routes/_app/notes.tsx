@@ -1,9 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
-import { FileText, Sparkles, Copy, Check } from "lucide-react";
-import ReactMarkdown from "react-markdown";
+import { FileText, Sparkles } from "lucide-react";
 import { summarizeNotes } from "@/lib/ai.functions";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Shimmer } from "@/components/ai-elements/shimmer";
 import { AiDisclaimer } from "@/components/ai-disclaimer";
 import { ToolPageHeader } from "@/components/tool-page-header";
+import { AIResultCard } from "@/components/ai-result-card";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_app/notes")({
@@ -32,7 +32,7 @@ function NotesPage() {
   const [output, setOutput] = useState<string>(() =>
     typeof window === "undefined" ? "" : localStorage.getItem(STORAGE_KEY) ?? "",
   );
-  const [copied, setCopied] = useState(false);
+  const previousOutput = useRef<string>("");
 
   const m = useMutation({
     mutationFn: () => summarize({ data: { transcript } }),
@@ -40,13 +40,23 @@ function NotesPage() {
       setOutput(res.text);
       localStorage.setItem(STORAGE_KEY, res.text);
     },
-    onError: (e: Error) => toast.error(e.message || "Summary failed"),
+    onError: (e: Error) => {
+      toast.error(e.message || "Summary failed");
+      if (previousOutput.current) setOutput(previousOutput.current);
+    },
   });
 
-  const copy = async () => {
-    await navigator.clipboard.writeText(output);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+  const canGenerate = transcript.trim().length >= 20;
+
+  const run = () => {
+    if (!canGenerate) return;
+    previousOutput.current = output;
+    m.mutate();
+  };
+
+  const updateOutput = (next: string) => {
+    setOutput(next);
+    localStorage.setItem(STORAGE_KEY, next);
   };
 
   return (
@@ -75,8 +85,8 @@ function NotesPage() {
               <p className="text-[11px] text-muted-foreground">{transcript.length.toLocaleString()} characters</p>
             </div>
             <Button
-              onClick={() => m.mutate()}
-              disabled={m.isPending || transcript.trim().length < 20}
+              onClick={run}
+              disabled={m.isPending || !canGenerate}
               className="w-full bg-gradient-primary text-primary-foreground hover:opacity-95"
             >
               {m.isPending ? <Shimmer>Summarizing...</Shimmer> : <><Sparkles className="mr-2 h-4 w-4" />Summarize</>}
@@ -85,44 +95,18 @@ function NotesPage() {
           </CardContent>
         </Card>
 
-        <Card className="shadow-soft">
-          <CardHeader className="flex flex-row items-center justify-between">
-            <div>
-              <CardTitle className="text-base">Summary</CardTitle>
-              <CardDescription>Key points, decisions, and actions.</CardDescription>
-            </div>
-            {output && (
-              <Button size="sm" variant="outline" onClick={copy}>
-                {copied ? <Check className="mr-1 h-4 w-4" /> : <Copy className="mr-1 h-4 w-4" />}
-                {copied ? "Copied" : "Copy"}
-              </Button>
-            )}
-          </CardHeader>
-          <CardContent>
-            {m.isPending ? (
-              <SkeletonBlock />
-            ) : output ? (
-              <article className="prose prose-sm dark:prose-invert max-w-none">
-                <ReactMarkdown>{output}</ReactMarkdown>
-              </article>
-            ) : (
-              <p className="text-sm text-muted-foreground">
-                Your structured summary will appear here.
-              </p>
-            )}
-          </CardContent>
-        </Card>
+        <AIResultCard
+          title="Summary"
+          description="Key points, decisions, and actions — edit before copying."
+          value={output}
+          onChange={updateOutput}
+          onRegenerate={run}
+          canRegenerate={canGenerate}
+          isLoading={m.isPending}
+          emptyHint="Your structured summary will appear here."
+          minRows={18}
+        />
       </div>
-    </div>
-  );
-}
-
-function SkeletonBlock() {
-  return (
-    <div className="space-y-3">
-      {[1, 0.85, 1, 0.7, 0.95, 0.6].map((w, i) => (
-        <div key={i} className="h-4 animate-pulse rounded bg-muted" style={{ width: `${w * 100}%` }} />
-      ))}
     </div>
   );
 }
