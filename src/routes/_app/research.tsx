@@ -18,7 +18,7 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/_app/research")({
   head: () => ({
     meta: [
-      { title: "AI Research Assistant | Workplace AI" },
+      { title: "AI Research Assistant | Taskgenie" },
       { name: "description", content: "Structured research briefs, insights, and next steps." },
     ],
   }),

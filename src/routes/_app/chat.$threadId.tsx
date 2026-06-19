@@ -41,7 +41,7 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/_app/chat/$threadId")({
   head: () => ({
     meta: [
-      { title: "AI Chat | Workplace AI" },
+      { title: "AI Chat | Taskgenie" },
       { name: "description", content: "Your AI conversation." },
     ],
   }),

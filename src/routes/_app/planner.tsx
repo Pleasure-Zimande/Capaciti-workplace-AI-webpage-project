@@ -18,7 +18,7 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/_app/planner")({
   head: () => ({
     meta: [
-      { title: "AI Task Planner | Workplace AI" },
+      { title: "AI Task Planner | Taskgenie" },
       { name: "description", content: "Prioritize and schedule your work with AI." },
     ],
   }),

@@ -1,4 +1,4 @@
-# Workplace AI Productivity Assistant
+# Taskgenie Productivity Assistant
 
 > AI-powered workspace for professionals: email drafting, meeting notes summarization, task planning, research briefs, and an AI chat assistant.
 

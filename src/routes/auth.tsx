@@ -14,7 +14,7 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Sign in | Workplace AI" },
+      { title: "Sign in | Taskgenie" },
       { name: "description", content: "Sign in to your AI workplace productivity assistant." },
     ],
   }),
@@ -83,7 +83,7 @@ function AuthPage() {
         <div className="flex items-center gap-3">
           <BrandLogo size={40} />
           <div>
-            <div className="text-lg font-semibold">Workplace AI</div>
+            <div className="text-lg font-semibold">Taskgenie</div>
             <div className="text-xs opacity-80">Productivity Assistant</div>
           </div>
         </div>
@@ -112,7 +112,7 @@ function AuthPage() {
           <CardHeader>
             <div className="mb-2 flex items-center gap-2 lg:hidden">
               <BrandLogo size={32} />
-              <span className="text-sm font-semibold">Workplace AI</span>
+              <span className="text-sm font-semibold">Taskgenie</span>
             </div>
             <CardTitle>Welcome</CardTitle>
             <CardDescription>Sign in to your workspace or create an account.</CardDescription>

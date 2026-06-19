@@ -17,7 +17,7 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/_app/notes")({
   head: () => ({
     meta: [
-      { title: "Meeting Notes Summarizer | Workplace AI" },
+      { title: "Meeting Notes Summarizer | Taskgenie" },
       { name: "description", content: "Turn raw meeting notes into key points, decisions, and action items." },
     ],
   }),
