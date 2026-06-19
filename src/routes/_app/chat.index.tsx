@@ -11,7 +11,7 @@ import { BrandLogo } from "@/components/brand-logo";
 export const Route = createFileRoute("/_app/chat/")({
   head: () => ({
     meta: [
-      { title: "AI Chat | Workplace AI" },
+      { title: "AI Chat | Taskgenie" },
       { name: "description", content: "Conversational AI assistant for your work." },
     ],
   }),

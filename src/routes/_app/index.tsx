@@ -7,7 +7,7 @@ import { BrandLogo } from "@/components/brand-logo";
 export const Route = createFileRoute("/_app/")({
   head: () => ({
     meta: [
-      { title: "Dashboard | Workplace AI" },
+      { title: "Dashboard | Taskgenie" },
       { name: "description", content: "Your AI workplace productivity hub: email, notes, planning, research, and chat." },
     ],
   }),

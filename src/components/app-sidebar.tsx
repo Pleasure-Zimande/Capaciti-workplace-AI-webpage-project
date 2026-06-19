@@ -45,7 +45,7 @@ export function AppSidebar({ userEmail }: { userEmail?: string | null }) {
         <Link to="/" className="flex items-center gap-2.5 px-2 py-1.5">
           <BrandLogo size={32} />
           <div className="flex flex-col group-data-[collapsible=icon]:hidden">
-            <span className="text-sm font-semibold leading-tight">Workplace AI</span>
+            <span className="text-sm font-semibold leading-tight">Taskgenie</span>
             <span className="text-[11px] text-muted-foreground leading-tight">
               Productivity Assistant
             </span>

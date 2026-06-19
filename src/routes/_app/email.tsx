@@ -19,7 +19,7 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/_app/email")({
   head: () => ({
     meta: [
-      { title: "Smart Email Generator | Workplace AI" },
+      { title: "Smart Email Generator | Taskgenie" },
       { name: "description", content: "Generate professional emails tuned to tone and audience." },
     ],
   }),
